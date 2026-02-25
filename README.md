@@ -67,7 +67,7 @@ Trained on per-series, per-horizon residuals.
 **Target**
 - `residual = true − nn_pred`
 
-Purpose:
+**Purpose:**
 - Correct horizon bias
 - Capture cross-sectional nonlinearities
 - Reduce structured NN error
@@ -75,14 +75,11 @@ Purpose:
 ---
 
 ## Data Requirements
-
-Place M5 CSV files inside:
-
-
-./datasets/
-sales_train_validation.csv
-calendar.csv
-sell_prices.csv
+**Place M5 CSV files inside:**
+- ./datasets/
+  - sales_train_validation.csv
+  - calendar.csv
+  - sell_prices.csv
 
 
 ---
@@ -96,24 +93,21 @@ sell_prices.csv
 | STRIDE    | 28    |
 | VAL_SPLIT_DAYS | 200 |
 
-Validation window per series:
-
-
-past_val = series[train_cutoff - HISTORY : train_cutoff]
-future_val = series[train_cutoff : train_cutoff + HORIZON]
+**Validation window per series:**
+- past_val = series[train_cutoff - HISTORY : train_cutoff]
+- future_val = series[train_cutoff : train_cutoff + HORIZON]
 
 
 ---
 
 ## Pipeline Design
-
 - Sliding windows generated using `tf.signal.frame`
 - Streaming via `tf.data.Dataset.flat_map`
 - `.shuffle() → .batch() → .repeat() → .prefetch()`
 - Deterministic validation windows
 - Residual DataFrame constructed for LightGBM
 
-Designed to:
+**Designed to:**
 - Avoid massive precomputed arrays
 - Scale across all M5 series
 - Remain architecture-focused
@@ -121,27 +115,19 @@ Designed to:
 ---
 
 ## Current Experimental Results (v1)
+- NN baseline RMSE: 2.454108
+- Hybrid RMSE: 1.940528
+- Improvement (RMSE): 0.513580
 
-
-NN baseline RMSE: 2.454108
-Hybrid RMSE: 1.940528
-Improvement (RMSE): 0.513580
-
-
-Interpretation:
+**Interpretation:**
 The residual learner reduces validation RMSE significantly, confirming structured residual signal.
 
 ---
 
 ## Repository Structure
-
-
-hybrid_m5_baseline_v1.py
-datasets/
-sales_train_validation.csv
-calendar.csv
-sell_prices.csv
-README.md
+- hybrid_m5_baseline.py
+- datasets/m5-forecasting-accuracy.zip (must be extracted first)
+- README.md
 
 
 ---
